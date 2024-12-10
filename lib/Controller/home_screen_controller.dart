@@ -4,6 +4,7 @@ import 'package:mac_dock/Model/dock_model.dart';
 
 class HomeScreenController extends GetxController {
   RxInt hoveredIndex = 99.obs;
+  RxBool isHovering = false.obs;
   RxBool isDragging = false.obs;
   RxString startIndex = "".obs;
   RxList<DockItem> bottomNavItems = [

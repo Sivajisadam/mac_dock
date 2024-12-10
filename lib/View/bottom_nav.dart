@@ -8,35 +8,43 @@ class BottonNavBar extends GetWidget<HomeScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Container(
-          height: 60,
-          alignment: Alignment.center,
-          width: Get.width * 0.6,
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.lightBlue.shade50,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:
-                    List.generate(controller.bottomNavItems.length, (index) {
-                  return GestureDetector(
-                    onTap: () {
-                      print("idnex:-$index");
-                    },
-                    child: Draggable(
+    return Obx(() => MouseRegion(
+          onExit: (event) {
+            controller.isHovering(false);
+            controller.hoveredIndex(99);
+          },
+          child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            width: Get.width * 0.6,
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.lightBlue.shade50,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children:
+                      List.generate(controller.bottomNavItems.length, (index) {
+                    return Draggable(
                       data: index,
                       onDragStarted: () {
                         controller.startIndex(index.toString());
                       },
                       onDragEnd: (details) {
-                        controller.hoveredIndex(99);
-                        controller.replaceIcon(index);
+                        final RenderBox box =
+                            context.findRenderObject() as RenderBox;
+                        final localPosition = box.globalToLocal(details.offset);
+                        final itemWidth =
+                            box.size.width / controller.bottomNavItems.length;
+                        final dropIndex =
+                            (localPosition.dx / itemWidth).floor();
+
+                        controller.replaceIcon(dropIndex);
                       },
                       feedback: Container(
                           height: 60,
@@ -50,32 +58,42 @@ class BottonNavBar extends GetWidget<HomeScreenController> {
                       child: Stack(
                         alignment: Alignment.bottomCenter,
                         children: [
-                          GestureDetector(
-                            onDoubleTap: () {
-                              print("object");
+                          MouseRegion(
+                            onHover: (event) {
+                              final RenderBox box =
+                                  context.findRenderObject() as RenderBox;
+                              final localPosition =
+                                  box.globalToLocal(event.position);
+                              final itemWidth = box.size.width /
+                                  controller.bottomNavItems.length;
+                              final hoveredIndex =
+                                  (localPosition.dx / itemWidth).floor();
+                              controller.hoveredIndex(hoveredIndex);
                             },
-                            onTap: () {},
-                            child: MouseRegion(
-                              onEnter: (_) {
-                                controller.hoveredIndex(index);
-                              },
-                              onExit: (_) => controller.hoveredIndex(99),
-                              child: TweenAnimationBuilder(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.elasticOut,
-                                tween: Tween<double>(
-                                  begin: 0,
-                                  end: controller.hoveredIndex.value == index
-                                      ? 1.0
-                                      : 0,
-                                ),
-                                builder: (context, value, child) {
-                                  return Transform.translate(
-                                    offset: Offset(0, -value * 8),
-                                    child: buildDockItem(index, controller),
-                                  );
-                                },
+                            onEnter: (_) {
+                              controller.isHovering(true);
+                            },
+                            child: TweenAnimationBuilder(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOutBack,
+                              tween: Tween<double>(
+                                begin: 0,
+                                end: controller.isHovering.value ? 1.0 : 0,
                               ),
+                              builder: (context, value, child) {
+                                double distance =
+                                    (controller.hoveredIndex.value - index)
+                                        .abs()
+                                        .toDouble();
+                                double elevation = distance <= 2.5
+                                    ? (1 - distance / 2.5) * value * 20
+                                    : 0;
+
+                                return Transform.translate(
+                                  offset: Offset(0, -elevation),
+                                  child: buildDockItem(index, controller),
+                                );
+                              },
                             ),
                           ),
                           Visibility(
@@ -90,11 +108,11 @@ class BottonNavBar extends GetWidget<HomeScreenController> {
                           )
                         ],
                       ),
-                    ),
-                  );
-                }),
-              ),
-            ],
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ));
   }
