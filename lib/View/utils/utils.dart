@@ -3,7 +3,7 @@ import 'package:mac_dock/Controller/home_screen_controller.dart';
 
 Widget buildDockItem(int index, HomeScreenController controller) {
   return AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
+    duration: const Duration(milliseconds: 100),
     width: controller.hoveredIndex.value == index ? 50 : 40,
     height: controller.hoveredIndex.value == index ? 50 : 40,
     child: Tooltip(
@@ -12,7 +12,7 @@ Widget buildDockItem(int index, HomeScreenController controller) {
         color: Colors.grey.shade400,
         shape: const ToolTipCustomShape(),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.zero,
       message: controller.bottomNavItems[index].label,
       textStyle: const TextStyle(color: Colors.black),
       child: controller.bottomNavItems[index].icon,
@@ -26,15 +26,14 @@ class ToolTipCustomShape extends ShapeBorder {
 
   @override
   EdgeInsetsGeometry get dimensions =>
-      EdgeInsets.only(bottom: usePadding ? 20 : 0);
+      EdgeInsets.only(bottom: usePadding ? 5 : 0);
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path();
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    rect =
-        Rect.fromPoints(rect.topLeft, rect.bottomRight - const Offset(0, 20));
+    rect = Rect.fromPoints(rect.topLeft, rect.bottomRight - const Offset(0, 5));
     return Path()
       ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(5)))
       ..moveTo(rect.bottomCenter.dx - 10, rect.bottomCenter.dy)

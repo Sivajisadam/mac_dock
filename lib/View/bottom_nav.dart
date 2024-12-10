@@ -11,7 +11,7 @@ class BottonNavBar extends GetWidget<HomeScreenController> {
     return Obx(() => MouseRegion(
           onExit: (event) {
             controller.isHovering(false);
-            controller.hoveredIndex(99);
+            controller.hoveredIndex(-1);
           },
           child: Container(
             height: 60,
@@ -98,12 +98,9 @@ class BottonNavBar extends GetWidget<HomeScreenController> {
                           ),
                           Visibility(
                             visible: controller.hoveredIndex.value == index,
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: CircleAvatar(
-                                radius: 2,
-                                backgroundColor: Colors.black54,
-                              ),
+                            child: const CircleAvatar(
+                              radius: 2,
+                              backgroundColor: Colors.black54,
                             ),
                           )
                         ],
