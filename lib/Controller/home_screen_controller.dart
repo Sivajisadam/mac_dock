@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:mac_dock/Model/dock_model.dart';
 
 class HomeScreenController extends GetxController {
@@ -7,12 +7,12 @@ class HomeScreenController extends GetxController {
   RxBool isDragging = false.obs;
   RxString startIndex = "".obs;
   RxList<DockItem> bottomNavItems = [
-    DockItem(icon: Icons.home, label: 'Home'),
-    DockItem(icon: Icons.search, label: 'Search'),
-    DockItem(icon: Icons.favorite, label: 'Favorites'),
-    DockItem(icon: Icons.person, label: 'Profile'),
-    DockItem(icon: Icons.settings, label: 'Settings'),
-    DockItem(icon: Icons.phone, label: 'Phone'),
+    DockItem(icon: Brand(Brands.chrome), label: 'Chrome'),
+    DockItem(icon: Brand(Brands.music), label: 'Music'),
+    DockItem(icon: Brand(Brands.app_store), label: 'App Store'),
+    DockItem(icon: Brand(Brands.phone), label: 'Phone'),
+    DockItem(icon: Brand(Brands.settings), label: 'Settings'),
+    DockItem(icon: Brand(Brands.calendar_app), label: 'Calendar'),
   ].obs;
 
   void replaceIcon(index, {type}) {

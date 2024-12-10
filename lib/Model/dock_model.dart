@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DockItem {
-  IconData? icon;
+  Widget? icon;
   String? label;
 
   DockItem({this.icon, this.label});
